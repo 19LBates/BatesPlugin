@@ -1,8 +1,20 @@
 name: BatesPlugin
-version: 0.1
+version: 0.2.2
 main: com.batesy.BatesPlugin
 api-version: "1.20"
 
 commands:
+  creepergrief:
+    description: Enable/Disable Creeper Block Griefing (does not affect damage)
+    usage: /creepergrief on|off
+    permission: batesplugin.creepergrief
+    permission-message: §cYou don't have the creds for this, bub!
+    aliases: [cg, creepergriefing]
   skib:
-    description: "..."
+    description: ...
+    usage: ...
+
+permissions:
+  batesplugin.creepergrief:
+    description: Enable/Disable Creeper Block Griefing (does not affect damage)
+    default: op

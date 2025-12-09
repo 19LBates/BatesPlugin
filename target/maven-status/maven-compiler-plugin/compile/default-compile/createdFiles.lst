@@ -1,2 +1,4 @@
 com\batesy\BatesPlugin.class
 com\batesy\SkibCommand.class
+com\batesy\CreeperGriefListener.class
+com\batesy\CreeperGriefCommand.class
