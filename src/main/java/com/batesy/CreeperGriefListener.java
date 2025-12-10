@@ -8,15 +8,18 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 
 public class CreeperGriefListener implements Listener {
 
+    private final BatesPlugin plugin;
+    public CreeperGriefListener(BatesPlugin plugin) {
+        this.plugin = plugin;
+    }
+
     @EventHandler
     public void onCreeperExplode(EntityExplodeEvent event) {
         if (!(event.getEntity() instanceof Creeper)) {
             return;
         }
 
-        BatesPlugin.getInstance().getLogger().info("Creeper explosion detected at " + event.getEntity().getLocation() + " — creeper-grief config = " + BatesPlugin.getInstance().getConfig().getBoolean("creeper-grief"));
-
-        if (!BatesPlugin.getInstance().getConfig().getBoolean("creeper-grief")) {
+        if (!plugin.getConfig().getBoolean("creeper-grief")) {
             event.blockList().clear();
         }
     }

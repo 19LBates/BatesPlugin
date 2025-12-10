@@ -10,7 +10,7 @@ commands:
     permission: batesplugin.creepergrief
     permission-message: §cYou don't have the creds for this, bub!
     aliases: [cg, creepergriefing]
-  skib:
+  skib:  
     description: ...
     usage: ...
 

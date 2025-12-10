@@ -1,15 +1,18 @@
 package com.batesy;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 
-public class CreeperGriefCommand implements CommandExecutor {
+public class CreeperGriefCommand implements CommandExecutor, TabCompleter {
 
     private final BatesPlugin plugin;
-    private String[] allowedArgs = { "on", "off" };
+    private String[] inpArgs = { "on", "off" };
 
     public CreeperGriefCommand(BatesPlugin plugin) {
         this.plugin = plugin;
@@ -19,35 +22,34 @@ public class CreeperGriefCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         if (args.length == 0) {
-            if (plugin.getConfig().getBoolean("creeper-grief")) {
-                sender.sendMessage("§fCreeper Griefing is currently §aON");
-            } else {
-                sender.sendMessage("§fCreeper Griefing is currently §cOFF");
-            }
+                sender.sendMessage("§fCreeper Griefing is currently set to: " + plugin.getConfig().getBoolean("creeper-grief"));
             return true;
         }
 
-        if (args.length != 1 || !Arrays.asList(allowedArgs).contains(args[0])) {
-            sender.sendMessage("§cUsage: /creepergrief on|off");
+        if (args.length != 1 || !Arrays.asList(inpArgs).contains(args[0])) {
+            sender.sendMessage("§cUsage: /creepergrief true|false");
             return true;
         }
 
-        if (args[0].equalsIgnoreCase("on")) {
+        if (args[0].equalsIgnoreCase("true")) {
             plugin.getConfig().set("creeper-grief", true);
-            plugin.saveConfig();
-            sender.sendMessage("§fCreeper Griefing turned §aON");
-            sender.sendMessage("§eKaboom!");
-            return true;
         }
 
-        if (args[0].equalsIgnoreCase("off")) {
+        if (args[0].equalsIgnoreCase("false")) {
             plugin.getConfig().set("creeper-grief", false);
-            plugin.saveConfig();
-            sender.sendMessage("§fCreeper Griefing turned §cOFF");
-            sender.sendMessage("§estill kaboom but no blocks destroyed...");
-            return true;
         }
+
+        plugin.saveConfig();
+        sender.sendMessage("§fCreeper Griefing is now set to: " + plugin.getConfig().getBoolean("creeper-grief"));
 
         return true;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        if (args.length == 1) {
+            return Arrays.asList(inpArgs);
+        }
+        return Collections.emptyList();
     }
 }
