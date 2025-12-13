@@ -12,7 +12,7 @@ import org.bukkit.command.TabCompleter;
 public class CreeperGriefCommand implements CommandExecutor, TabCompleter {
 
     private final BatesPlugin plugin;
-    private String[] inpArgs = { "on", "off" };
+    private String[] inpArgs = { "true", "false" };
 
     public CreeperGriefCommand(BatesPlugin plugin) {
         this.plugin = plugin;

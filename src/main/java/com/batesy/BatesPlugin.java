@@ -10,6 +10,7 @@ public class BatesPlugin extends JavaPlugin {
         getCommand("skib").setExecutor(new SkibCommand());
         getCommand("creepergrief").setExecutor(new CreeperGriefCommand(this));
         getServer().getPluginManager().registerEvents(new CreeperGriefListener(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
     }
 
     @Override
