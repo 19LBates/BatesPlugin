@@ -1,14 +1,11 @@
 package com.batesy;
 
-import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 public class PlayerQuitListener implements Listener {
     private final BatesPlugin plugin;
-    private final MiniMessage mm = MiniMessage.miniMessage();
     public PlayerQuitListener(BatesPlugin plugin) {
         this.plugin = plugin;
     }
@@ -26,6 +23,6 @@ public class PlayerQuitListener implements Listener {
             return;
         }
 
-        event.quitMessage(mm.deserialize(raw, Placeholder.parsed("player", event.getPlayer().getName())));
+        event.quitMessage(plugin.mm().deserialize(raw, plugin.playerPlaceholders(event.getPlayer())));
     }
 }

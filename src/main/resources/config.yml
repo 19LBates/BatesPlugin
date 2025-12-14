@@ -1,13 +1,17 @@
-﻿# =========== CREEPER GRIEFING ===========
+﻿# =========== MOB GRIEFING ===========
 # true = normal functionality
 # false = no blocks destroyed, but damage to entities still occurs
-# Can also be toggled with commands: /creepergrief, /cg, /creepergriefing
-creeper-grief: true
+# Can also be toggled and checked with command: /grief
+grief:
+  creeper: true
+  wither: true
+  ghast: true
+  enderman: true
 
 # =========== JOIN AND QUIT MESSAGES ===========
 # Disable for vanilla message
 # To fully remove message, set enabled to true and leave message as ""
-
+# Placeholders: <player>
 join-message:
   enabled: true
   message: "<gradient:#41FF6D:#72BAFF><player> hopped on</gradient>"
