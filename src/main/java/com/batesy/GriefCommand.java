@@ -13,8 +13,8 @@ import org.jetbrains.annotations.NotNull;
 public class GriefCommand implements CommandExecutor, TabCompleter {
 
     private final BatesPlugin plugin;
-    private final List<String> mobs = List.of("creeper", "wither", "ghast", "enderman") ;
-    private static final List<String> bools = List.of("true", "false");
+    private final List<String> mobs = List.of("creeper", "enderman", "ghast", "rabbit", "ravager", "sheep", "silverfish", "villager", "wither", "zombie");
+    private final List<String> bools = List.of("true", "false");
 
     public GriefCommand(BatesPlugin plugin) {
         this.plugin = plugin;

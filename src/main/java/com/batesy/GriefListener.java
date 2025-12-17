@@ -5,12 +5,35 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
+
+import java.util.List;
+import java.util.Map;
 
 public class GriefListener implements Listener {
 
     private final BatesPlugin plugin;
     public GriefListener(BatesPlugin plugin) {
         this.plugin = plugin;
+    }
+    private static final Map<EntityType, String> blockChangeMobs = Map.of(
+            EntityType.ENDERMAN, "enderman",
+            EntityType.SHEEP, "sheep",
+            EntityType.WITHER, "wither",
+            EntityType.ZOMBIE, "zombie"
+    );
+
+    @EventHandler
+    public void onBlockChange(EntityChangeBlockEvent event) {
+        String key = blockChangeMobs.get(event.getEntityType());
+
+        if (key == null) {
+            return;
+        }
+
+        if (!plugin.getConfig().getBoolean("grief." + key)) {
+            event.setCancelled(true);
+        }
     }
 
     @EventHandler
@@ -24,9 +47,10 @@ public class GriefListener implements Listener {
         }
     }
 
+
     @EventHandler
     public void onGhastFireballExplode(EntityExplodeEvent event) {
-        if (!(event.getEntity() instanceof Fireball) || !(((Fireball) event.getEntity()).getShooter() instanceof Ghast)) {
+        if (event.getEntityType() != EntityType.FIREBALL || !(((Fireball) event.getEntity()).getShooter() instanceof Ghast)) {
             return;
         }
 
@@ -36,33 +60,24 @@ public class GriefListener implements Listener {
     }
 
     @EventHandler
+    public void onVillagerPickupItem(EntityPickupItemEvent event) {
+        if (event.getEntityType() != EntityType.VILLAGER) {
+            return;
+        }
+
+        if (!plugin.getConfig().getBoolean("grief.villager")) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
     public void onWitherSkullExplode(EntityExplodeEvent event) {
-        if (!(event.getEntity() instanceof WitherSkull) || !(((WitherSkull) event.getEntity()).getShooter() instanceof Wither)) {
+        if (event.getEntityType() != EntityType.WITHER_SKULL || !(((WitherSkull) event.getEntity()).getShooter() instanceof Wither)) {
             return;
         }
 
         if (!plugin.getConfig().getBoolean("grief.wither")) {
             event.blockList().clear();
-        }
-    }
-
-    @EventHandler
-    public void onWitherBlockBreak(EntityChangeBlockEvent event) {
-        if (!(event.getEntity() instanceof Wither)) return;
-
-        if (!plugin.getConfig().getBoolean("grief.wither")) {
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler
-    public void onEndermanChangeBlock(EntityChangeBlockEvent event) {
-        if (!(event.getEntity() instanceof Enderman)) {
-            return;
-        }
-
-        if (!plugin.getConfig().getBoolean("grief.enderman")) {
-            event.setCancelled(true);
         }
     }
 }

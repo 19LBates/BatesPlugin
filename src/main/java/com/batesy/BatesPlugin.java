@@ -15,14 +15,23 @@ public class BatesPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         mm = MiniMessage.miniMessage();
+
+        //Ensure all config options are present
         saveDefaultConfig();
-        getLogger().info("BatesPlugin enabled! Hello!");
+        getConfig().options().copyDefaults(true);
+        saveConfig();
+
+        //Register commands
         Objects.requireNonNull(getCommand("skib")).setExecutor(new SkibCommand());
         Objects.requireNonNull(getCommand("grief")).setExecutor(new GriefCommand(this));
         Objects.requireNonNull(getCommand("bates")).setExecutor(new BatesCommand(this));
+
+        //Register listeners
         getServer().getPluginManager().registerEvents(new GriefListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerQuitListener(this), this);
+
+        getLogger().info("BatesPlugin enabled! Hello!");
     }
 
     @Override
@@ -44,7 +53,7 @@ public class BatesPlugin extends JavaPlugin {
         //no paper alternative for getDescription() yet
         //noinspection deprecation
         return TagResolver.resolver(
-                Placeholder.parsed("version", this.getDescription().getVersion())
+                Placeholder.parsed("version", getDescription().getVersion())
         );
     }
 }

@@ -4,9 +4,15 @@
 # Can also be toggled and checked with command: /grief
 grief:
   creeper: true
-  wither: true
-  ghast: true
   enderman: true
+  ghast: true
+  rabbit: true
+  ravager: true
+  sheep: true
+  silverfish: true
+  villager: true
+  wither: true
+  zombie: true
 
 # =========== JOIN AND QUIT MESSAGES ===========
 # Disable for vanilla message
