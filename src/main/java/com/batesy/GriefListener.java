@@ -11,20 +11,17 @@ import org.bukkit.projectiles.ProjectileSource;
 public class GriefListener implements Listener {
 
     private final BatesPlugin plugin;
-    private final ConfigManager configMgr;
 
-    public GriefListener(BatesPlugin plugin, ConfigManager configMgr) {
+    public GriefListener(BatesPlugin plugin) {
         this.plugin = plugin;
-        this.configMgr = configMgr;
     }
 
     @EventHandler
     public void onChangeBlock(EntityChangeBlockEvent event) {
         EntityType type = event.getEntityType();
         if (type == EntityType.PLAYER) return;
-        String key = type.toString().toLowerCase();
 
-        if (!configMgr.getBool("grief." + key)) {
+        if (plugin.config().isGriefMobDisabled(type)) {
             event.setCancelled(true);
         }
     }
@@ -34,7 +31,6 @@ public class GriefListener implements Listener {
         Entity entity = event.getEntity();
         EntityType type = entity.getType();
         if (type == EntityType.PLAYER) return;
-        String key = type.toString().toLowerCase();
 
         //Entity is a projectile
         if (entity instanceof Projectile projectile) {
@@ -42,11 +38,7 @@ public class GriefListener implements Listener {
             if (!(source instanceof Entity shooter)) return;
 
             EntityType shooterType = shooter.getType();
-            String shooterKey = shooterType.toString().toLowerCase();
-
-            if (!configMgr.getBool("grief." + shooterKey)) {
-                int size = event.blockList().size();
-                System.out.println("Prevented " + size + " blocks from being destroyed by " + shooterType + "'s " + shooterKey);
+            if (plugin.config().isGriefMobDisabled(shooterType)) {
                 event.blockList().clear();
             }
 
@@ -54,7 +46,7 @@ public class GriefListener implements Listener {
         }
 
         //Entity itself explodes
-        if (!configMgr.getBool("grief." + key)) {
+        if (plugin.config().isGriefMobDisabled(type)) {
             event.blockList().clear();
         }
     }
@@ -63,9 +55,8 @@ public class GriefListener implements Listener {
     public void onPickupItem(EntityPickupItemEvent event) {
         EntityType type = event.getEntityType();
         if (type == EntityType.PLAYER) return;
-        String key = type.toString().toLowerCase();
 
-        if (!configMgr.getBool("grief." + key)) {
+        if (plugin.config().isGriefMobDisabled(type)) {
             event.setCancelled(true);
         }
     }

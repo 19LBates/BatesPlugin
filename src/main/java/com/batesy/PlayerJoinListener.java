@@ -6,20 +6,18 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 public class PlayerJoinListener implements Listener {
     private final BatesPlugin plugin;
-    private final ConfigManager configMgr;
 
-    public PlayerJoinListener(BatesPlugin plugin, ConfigManager configMgr) {
+    public PlayerJoinListener(BatesPlugin plugin) {
         this.plugin = plugin;
-        this.configMgr = configMgr;
     }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        if (!configMgr.getBool("join-message.enabled")) {
+        if (!plugin.config().isJoinMessageEnabled()) {
             return;
         }
 
-        String raw = configMgr.getStr("join-message.message");
+        String raw = plugin.config().getJoinMessage();
 
         if (raw == null || raw.isBlank()) {
             event.joinMessage(null);

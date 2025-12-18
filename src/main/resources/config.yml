@@ -1,18 +1,11 @@
 ﻿# =========== MOB GRIEFING ===========
-# true = normal functionality
-# false = no blocks destroyed, but damage to entities still occurs
-# Can also be toggled and checked with command: /grief
+# Add mobs to the disabled-mobs list to stop them
+# modifying blocks in any way, or picking up any items
+# You can also use /grief to add/remove mobs from here
 grief:
-  creeper: true
-  enderman: true
-  ghast: true
-  rabbit: true
-  ravager: true
-  sheep: true
-  silverfish: true
-  villager: true
-  wither: true
-  zombie: true
+  disabled-mobs:
+    - spider
+    # - creeper
 
 # =========== JOIN AND QUIT MESSAGES ===========
 # Disable for vanilla message

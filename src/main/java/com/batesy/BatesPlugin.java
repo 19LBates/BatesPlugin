@@ -11,13 +11,13 @@ import java.util.Objects;
 public class BatesPlugin extends JavaPlugin {
 
     private MiniMessage mm;
-    private ConfigManager configMgr;
+    private ConfigManager config;
 
     @Override
     public void onEnable() {
         mm = MiniMessage.miniMessage();
-        configMgr = new ConfigManager(this);
-        configMgr.onEnable();
+        config = new ConfigManager(this);
+        config.load();
 
         //Register commands
         Objects.requireNonNull(getCommand("skib")).setExecutor(new SkibCommand(this));
@@ -25,11 +25,17 @@ public class BatesPlugin extends JavaPlugin {
         Objects.requireNonNull(getCommand("bates")).setExecutor(new BatesCommand(this));
 
         //Register listeners
-        getServer().getPluginManager().registerEvents(new GriefListener(this, configMgr), this);
-        getServer().getPluginManager().registerEvents(new PlayerJoinListener(this, configMgr), this);
-        getServer().getPluginManager().registerEvents(new PlayerQuitListener(this, configMgr), this);
+        getServer().getPluginManager().registerEvents(new GriefListener(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerQuitListener(this), this);
 
         getLogger().info("BatesPlugin enabled! Hello!");
+    }
+
+    @Override
+    public void reloadConfig() {
+        super.reloadConfig();
+        config.load();
     }
 
     @Override
@@ -40,6 +46,7 @@ public class BatesPlugin extends JavaPlugin {
     public MiniMessage mm() {
         return mm;
     }
+    public ConfigManager config() {return config; }
 
     public TagResolver playerPlaceholders(Player player) {
         return TagResolver.resolver(
