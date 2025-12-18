@@ -6,78 +6,67 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
-
-import java.util.List;
-import java.util.Map;
+import org.bukkit.projectiles.ProjectileSource;
 
 public class GriefListener implements Listener {
 
     private final BatesPlugin plugin;
-    public GriefListener(BatesPlugin plugin) {
+    private final ConfigManager configMgr;
+
+    public GriefListener(BatesPlugin plugin, ConfigManager configMgr) {
         this.plugin = plugin;
+        this.configMgr = configMgr;
     }
-    private static final Map<EntityType, String> blockChangeMobs = Map.of(
-            EntityType.ENDERMAN, "enderman",
-            EntityType.SHEEP, "sheep",
-            EntityType.WITHER, "wither",
-            EntityType.ZOMBIE, "zombie"
-    );
 
     @EventHandler
-    public void onBlockChange(EntityChangeBlockEvent event) {
-        String key = blockChangeMobs.get(event.getEntityType());
+    public void onChangeBlock(EntityChangeBlockEvent event) {
+        EntityType type = event.getEntityType();
+        if (type == EntityType.PLAYER) return;
+        String key = type.toString().toLowerCase();
 
-        if (key == null) {
-            return;
-        }
-
-        if (!plugin.getConfig().getBoolean("grief." + key)) {
+        if (!configMgr.getBool("grief." + key)) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
-    public void onCreeperExplode(EntityExplodeEvent event) {
-        if (!(event.getEntity() instanceof Creeper)) {
+    public void onExplode(EntityExplodeEvent event) {
+        Entity entity = event.getEntity();
+        EntityType type = entity.getType();
+        if (type == EntityType.PLAYER) return;
+        String key = type.toString().toLowerCase();
+
+        //Entity is a projectile
+        if (entity instanceof Projectile projectile) {
+            ProjectileSource source = projectile.getShooter();
+            if (!(source instanceof Entity shooter)) return;
+
+            EntityType shooterType = shooter.getType();
+            String shooterKey = shooterType.toString().toLowerCase();
+
+            if (!configMgr.getBool("grief." + shooterKey)) {
+                int size = event.blockList().size();
+                System.out.println("Prevented " + size + " blocks from being destroyed by " + shooterType + "'s " + shooterKey);
+                event.blockList().clear();
+            }
+
             return;
         }
 
-        if (!plugin.getConfig().getBoolean("grief.creeper")) {
+        //Entity itself explodes
+        if (!configMgr.getBool("grief." + key)) {
             event.blockList().clear();
         }
     }
 
-
     @EventHandler
-    public void onGhastFireballExplode(EntityExplodeEvent event) {
-        if (event.getEntityType() != EntityType.FIREBALL || !(((Fireball) event.getEntity()).getShooter() instanceof Ghast)) {
-            return;
-        }
+    public void onPickupItem(EntityPickupItemEvent event) {
+        EntityType type = event.getEntityType();
+        if (type == EntityType.PLAYER) return;
+        String key = type.toString().toLowerCase();
 
-        if (!plugin.getConfig().getBoolean("grief.ghast")) {
-            event.blockList().clear();
-        }
-    }
-
-    @EventHandler
-    public void onVillagerPickupItem(EntityPickupItemEvent event) {
-        if (event.getEntityType() != EntityType.VILLAGER) {
-            return;
-        }
-
-        if (!plugin.getConfig().getBoolean("grief.villager")) {
+        if (!configMgr.getBool("grief." + key)) {
             event.setCancelled(true);
-        }
-    }
-
-    @EventHandler
-    public void onWitherSkullExplode(EntityExplodeEvent event) {
-        if (event.getEntityType() != EntityType.WITHER_SKULL || !(((WitherSkull) event.getEntity()).getShooter() instanceof Wither)) {
-            return;
-        }
-
-        if (!plugin.getConfig().getBoolean("grief.wither")) {
-            event.blockList().clear();
         }
     }
 }

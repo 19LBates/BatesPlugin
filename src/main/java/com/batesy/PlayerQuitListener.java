@@ -6,17 +6,20 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public class PlayerQuitListener implements Listener {
     private final BatesPlugin plugin;
-    public PlayerQuitListener(BatesPlugin plugin) {
+    private final ConfigManager configMgr;
+
+    public PlayerQuitListener(BatesPlugin plugin, ConfigManager configMgr) {
         this.plugin = plugin;
+        this.configMgr = configMgr;
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        if (!plugin.getConfig().getBoolean("quit-message.enabled")) {
+        if (!configMgr.getBool("quit-message.enabled")) {
             return;
         }
 
-        String raw = plugin.getConfig().getString("quit-message.message");
+        String raw = configMgr.getStr("quit-message.message");
 
         if (raw == null || raw.isBlank()) {
             event.quitMessage(null);

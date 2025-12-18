@@ -11,25 +11,23 @@ import java.util.Objects;
 public class BatesPlugin extends JavaPlugin {
 
     private MiniMessage mm;
+    private ConfigManager configMgr;
 
     @Override
     public void onEnable() {
         mm = MiniMessage.miniMessage();
-
-        //Ensure all config options are present
-        saveDefaultConfig();
-        getConfig().options().copyDefaults(true);
-        saveConfig();
+        configMgr = new ConfigManager(this);
+        configMgr.onEnable();
 
         //Register commands
-        Objects.requireNonNull(getCommand("skib")).setExecutor(new SkibCommand());
+        Objects.requireNonNull(getCommand("skib")).setExecutor(new SkibCommand(this));
         Objects.requireNonNull(getCommand("grief")).setExecutor(new GriefCommand(this));
         Objects.requireNonNull(getCommand("bates")).setExecutor(new BatesCommand(this));
 
         //Register listeners
-        getServer().getPluginManager().registerEvents(new GriefListener(this), this);
-        getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
-        getServer().getPluginManager().registerEvents(new PlayerQuitListener(this), this);
+        getServer().getPluginManager().registerEvents(new GriefListener(this, configMgr), this);
+        getServer().getPluginManager().registerEvents(new PlayerJoinListener(this, configMgr), this);
+        getServer().getPluginManager().registerEvents(new PlayerQuitListener(this, configMgr), this);
 
         getLogger().info("BatesPlugin enabled! Hello!");
     }
